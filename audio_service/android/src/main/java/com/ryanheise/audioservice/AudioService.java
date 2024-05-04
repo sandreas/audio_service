@@ -957,6 +957,9 @@ public class AudioService extends MediaBrowserServiceCompat {
             // TODO: use typesafe version once SDK 33 is released.
             @SuppressWarnings("deprecation")
             final KeyEvent event = (KeyEvent)mediaButtonEvent.getExtras().getParcelable(Intent.EXTRA_KEY_EVENT);
+
+            listener.onRawClick(eventToButton(event), eventToAction(event));
+
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 switch (event.getKeyCode()) {
                 case KEYCODE_BYPASS_PLAY:
@@ -1007,6 +1010,17 @@ public class AudioService extends MediaBrowserServiceCompat {
                 return MediaButton.previous;
             default:
                 return MediaButton.media;
+            }
+        }
+
+        private MediaButton eventToAction(KeyEvent event) {
+            switch (event.getAction()) {
+                case KeyEvent.ACTION_DOWN:
+                    return MediaButtonAction.keyDown;
+                case KeyEvent.ACTION_UP:
+                    return MediaButtonAction.keyUp;
+                default:
+                    return MediaButtonAction.none;
             }
         }
 

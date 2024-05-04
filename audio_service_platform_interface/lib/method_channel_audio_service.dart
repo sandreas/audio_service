@@ -122,6 +122,13 @@ class MethodChannelAudioService extends AudioServicePlatform {
             button:
                 MediaButtonMessage.values[call.arguments['button'] as int]));
         return null;
+      case 'rawClick':
+        await callbacks.rawClick(ClickRequest(
+            button:
+            MediaButtonMessage.values[call.arguments['button'] as int],
+            action:
+            MediaButtonMessage.values[call.arguments['action'] as int]));
+        return null;
       case 'stop':
         await callbacks.stop(const StopRequest());
         return null;

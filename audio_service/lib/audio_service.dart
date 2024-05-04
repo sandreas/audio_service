@@ -27,6 +27,12 @@ enum MediaButton {
   previous,
 }
 
+enum MediaButtonAction {
+  none,
+  keyDown,
+  keyUp
+}
+
 /// The actions associated with playing audio.
 enum MediaAction {
   /// Stop playing audio.
@@ -1580,6 +1586,11 @@ class _BackgroundAudioHandler extends BaseAudioHandler {
       _task.onClick(button);
 
   @override
+  Future<void> rawClick([MediaButton button= MediaButton.media, MediaButtonAction action = MediaButtonAction.none]) =>
+      // ignore: deprecated_member_use_from_same_package
+  _task.onRawClick(button, action);
+  
+  @override
   // ignore: deprecated_member_use_from_same_package
   Future<void> stop() => _task.onStop();
 
@@ -1745,6 +1756,11 @@ abstract class BackgroundAudioTask {
     }
   }
 
+  @Deprecated("Use AudioHandler.rawClick instead.")
+  Future<void> onRawClick(MediaButton? button, MediaButtonAction? action) async {
+    
+  }
+
   /// Deprecated. Replaced by [AudioHandler.pause].
   @Deprecated("Use AudioHandler.pause instead.")
   Future<void> onPause() async {}
@@ -1906,7 +1922,10 @@ abstract class AudioHandler {
 
   /// Process a headset button click, where [button] defaults to
   /// [MediaButton.media].
-  Future<void> click([MediaButton button = MediaButton.media]);
+  Future<void> click([MediaButton button = MediaButton.media]);  
+  
+  /// Process a raw headset button click
+  Future<void> rawClick([MediaButton button = MediaButton.media, MediaButtonAction action=MediaButtonAction.none]);
 
   /// Stop playback and release resources.
   Future<void> stop();
@@ -2182,6 +2201,11 @@ class CompositeAudioHandler extends AudioHandler {
   @mustCallSuper
   Future<void> click([MediaButton button = MediaButton.media]) =>
       _inner.click(button);
+
+  @override
+  @mustCallSuper
+  Future<void> rawClick([MediaButton button = MediaButton.media, MediaButtonAction action = MediaButtonAction.none]) =>
+      _inner.rawClick(button, action);
 
   @override
   @mustCallSuper
@@ -2494,6 +2518,10 @@ class IsolatedAudioHandler extends CompositeAudioHandler {
           await click(request.arguments![0] as MediaButton);
           request.sendPort.send(null);
           break;
+        case 'rawClick':
+          await rawClick(request.arguments![0] as MediaButton,request.arguments![1] as MediaButtonAction);
+          request.sendPort.send(null);
+          break;
         case 'stop':
           await stop();
           request.sendPort.send(null);
@@ -2769,6 +2797,10 @@ class _ClientIsolatedAudioHandler implements BaseAudioHandler {
   @override
   Future<void> click([MediaButton button = MediaButton.media]) =>
       _send('click', <dynamic>[button]);
+
+  @override
+  Future<void> rawClick([MediaButton button = MediaButton.media, MediaButtonAction action = MediaButtonAction.none]) =>
+      _send('rawClick', <dynamic>[button, action]);
 
   @override
   Future<void> stop() => _send('stop');
@@ -3095,6 +3127,11 @@ class BaseAudioHandler extends AudioHandler {
         await skipToPrevious();
         break;
     }
+  }
+
+  @override
+  Future<void> rawClick([MediaButton button = MediaButton.media, MediaButtonAction action = MediaButtonAction.none]) async {
+
   }
 
   /// Stop playback and release resources.
@@ -3854,6 +3891,11 @@ class _HandlerCallbacks extends AudioHandlerCallbacks {
   @override
   Future<void> click(ClickRequest request) async {
     return (await handlerFuture).click(request.button.toPlugin());
+  }
+
+  @override
+  Future<void> rawClick(ClickRequest request) async {
+    return (await handlerFuture).rawClick(request.button.toPlugin());
   }
 
   @override
