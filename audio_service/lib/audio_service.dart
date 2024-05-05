@@ -1444,6 +1444,16 @@ class AudioService {
   static final Future<void> Function([MediaButton]) click =
       _compatibilitySwitcher.click;
 
+  /// Deprecated. Use [AudioHandler.click] instead.
+  @Deprecated("Use AudioHandler.keyDown instead.")
+  static final Future<void> Function([MediaButton]) keyDown =
+      _compatibilitySwitcher.keyDown;
+
+  /// Deprecated. Use [AudioHandler.click] instead.
+  @Deprecated("Use AudioHandler.keyUp instead.")
+  static final Future<void> Function([MediaButton]) keyUp =
+      _compatibilitySwitcher.keyUp;
+
   /// Deprecated. Use [AudioHandler.prepare] instead.
   @Deprecated("Use AudioHandler.prepare instead.")
   static final prepare = _compatibilitySwitcher.prepare;
