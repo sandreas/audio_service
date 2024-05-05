@@ -122,6 +122,16 @@ class MethodChannelAudioService extends AudioServicePlatform {
             button:
                 MediaButtonMessage.values[call.arguments['button'] as int]));
         return null;
+      case 'keyDown':
+        await callbacks.keyDown(KeyDownRequest(
+            button:
+            MediaButtonMessage.values[call.arguments['button'] as int]));
+        return null;
+      case 'keyUp':
+        await callbacks.keyUp(KeyUpRequest(
+            button:
+            MediaButtonMessage.values[call.arguments['button'] as int]));
+        return null;
       case 'stop':
         await callbacks.stop(const StopRequest());
         return null;

@@ -240,6 +240,18 @@ class LoggingAudioHandler extends CompositeAudioHandler {
   }
 
   @override
+  Future<void> keyDown([MediaButton button = MediaButton.media]) {
+    _log('keyDown($button)');
+    return super.keyDown(button);
+  }
+
+  @override
+  Future<void> keyUp([MediaButton button = MediaButton.media]) {
+    _log('keyUp($button)');
+    return super.keyUp(button);
+  }
+
+  @override
   Future<void> stop() {
     _log('stop()');
     return super.stop();

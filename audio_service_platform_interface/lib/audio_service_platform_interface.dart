@@ -113,6 +113,14 @@ abstract class AudioHandlerCallbacks {
   /// [MediaButtonMessage.media].
   Future<void> click(ClickRequest request);
 
+  /// Process a headset button click, where [ClickRequest.button] defaults to
+  /// [MediaButtonMessage.media].
+  Future<void> keyDown(KeyDownRequest request);
+
+  /// Process a headset button click, where [ClickRequest.button] defaults to
+  /// [MediaButtonMessage.media].
+  Future<void> keyUp(KeyUpRequest request);
+
   /// Stop playback and release resources.
   Future<void> stop(StopRequest request);
 
@@ -989,6 +997,28 @@ class ClickRequest {
   Map<String, dynamic> toMap() => <String, dynamic>{
         'button': button.index,
       };
+}
+
+class KeyDownRequest {
+  final MediaButtonMessage button;
+
+  @literal
+  const KeyDownRequest({required this.button});
+
+  Map<String, dynamic> toMap() => <String, dynamic>{
+    'button': button.index,
+  };
+}
+
+class KeyUpRequest {
+  final MediaButtonMessage button;
+
+  @literal
+  const KeyUpRequest({required this.button});
+
+  Map<String, dynamic> toMap() => <String, dynamic>{
+    'button': button.index,
+  };
 }
 
 class StopRequest {

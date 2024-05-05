@@ -630,6 +630,16 @@ public class AudioServicePlugin implements FlutterPlugin, ActivityAware {
         }
 
         @Override
+        public void onKeyDown(MediaButton mediaButton) {
+            invokeMethod("keyDown", mapOf("button", mediaButton.ordinal()));
+        }
+
+        @Override
+        public void onKeyUp(MediaButton mediaButton) {
+            invokeMethod("keyUp", mapOf("button", mediaButton.ordinal()));
+        }
+
+        @Override
         public void onPause() {
             invokeMethod("pause", mapOf());
         }

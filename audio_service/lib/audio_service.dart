@@ -1580,6 +1580,16 @@ class _BackgroundAudioHandler extends BaseAudioHandler {
       _task.onClick(button);
 
   @override
+  Future<void> keyDown([MediaButton button = MediaButton.media]) =>
+      // ignore: deprecated_member_use_from_same_package
+  _task.onKeyDown(button);
+
+  @override
+  Future<void> keyUp([MediaButton button = MediaButton.media]) =>
+      // ignore: deprecated_member_use_from_same_package
+  _task.onKeyUp(button);
+
+  @override
   // ignore: deprecated_member_use_from_same_package
   Future<void> stop() => _task.onStop();
 
@@ -1745,6 +1755,14 @@ abstract class BackgroundAudioTask {
     }
   }
 
+  /// Deprecated. Replaced by [AudioHandler.keyDown].
+  @Deprecated("Use AudioHandler.keyDown instead.")
+  Future<void> onKeyDown(MediaButton? button) async {}
+
+  /// Deprecated. Replaced by [AudioHandler.keyUp].
+  @Deprecated("Use AudioHandler.keyUp instead.")
+  Future<void> onKeyUp(MediaButton? button) async {}
+
   /// Deprecated. Replaced by [AudioHandler.pause].
   @Deprecated("Use AudioHandler.pause instead.")
   Future<void> onPause() async {}
@@ -1907,6 +1925,11 @@ abstract class AudioHandler {
   /// Process a headset button click, where [button] defaults to
   /// [MediaButton.media].
   Future<void> click([MediaButton button = MediaButton.media]);
+
+  /// Process a headset button click, where [button] defaults to
+  /// [MediaButton.media].
+  Future<void> keyDown([MediaButton button = MediaButton.media]);
+  Future<void> keyUp([MediaButton button = MediaButton.media]);
 
   /// Stop playback and release resources.
   Future<void> stop();
@@ -2182,6 +2205,16 @@ class CompositeAudioHandler extends AudioHandler {
   @mustCallSuper
   Future<void> click([MediaButton button = MediaButton.media]) =>
       _inner.click(button);
+
+  @override
+  @mustCallSuper
+  Future<void> keyDown([MediaButton button = MediaButton.media]) =>
+      _inner.keyDown(button);
+
+  @override
+  @mustCallSuper
+  Future<void> keyUp([MediaButton button = MediaButton.media]) =>
+      _inner.keyUp(button);
 
   @override
   @mustCallSuper
@@ -2494,6 +2527,14 @@ class IsolatedAudioHandler extends CompositeAudioHandler {
           await click(request.arguments![0] as MediaButton);
           request.sendPort.send(null);
           break;
+        case 'keyDown':
+          await keyDown(request.arguments![0] as MediaButton);
+          request.sendPort.send(null);
+          break;
+        case 'keyUp':
+          await keyUp(request.arguments![0] as MediaButton);
+          request.sendPort.send(null);
+          break;
         case 'stop':
           await stop();
           request.sendPort.send(null);
@@ -2769,6 +2810,12 @@ class _ClientIsolatedAudioHandler implements BaseAudioHandler {
   @override
   Future<void> click([MediaButton button = MediaButton.media]) =>
       _send('click', <dynamic>[button]);
+  @override
+  Future<void> keyDown([MediaButton button = MediaButton.media]) =>
+      _send('keyDown', <dynamic>[button]);
+  @override
+  Future<void> keyUp([MediaButton button = MediaButton.media]) =>
+      _send('keyUp', <dynamic>[button]);
 
   @override
   Future<void> stop() => _send('stop');
@@ -3096,6 +3143,11 @@ class BaseAudioHandler extends AudioHandler {
         break;
     }
   }
+  @override
+  Future<void> keyDown([MediaButton button = MediaButton.media]) async {}
+
+  @override
+  Future<void> keyUp([MediaButton button = MediaButton.media]) async {}
 
   /// Stop playback and release resources.
   ///
@@ -3407,6 +3459,7 @@ enum AudioServiceRepeatMode {
 class AudioServiceConfig {
   /// Whether on Android a media button click wakes up the media session and
   /// resumes playback.
+  /// xxx
   // TODO: either fix, or remove this https://github.com/ryanheise/audio_service/issues/638
   final bool androidResumeOnClick;
 
@@ -3854,6 +3907,16 @@ class _HandlerCallbacks extends AudioHandlerCallbacks {
   @override
   Future<void> click(ClickRequest request) async {
     return (await handlerFuture).click(request.button.toPlugin());
+  }
+
+  @override
+  Future<void> keyDown(ClickRequest request) async {
+    return (await handlerFuture).keyDown(request.button.toPlugin());
+  }
+
+  @override
+  Future<void> keyUp(ClickRequest request) async {
+    return (await handlerFuture).keyUp(request.button.toPlugin());
   }
 
   @override

@@ -958,6 +958,7 @@ public class AudioService extends MediaBrowserServiceCompat {
             @SuppressWarnings("deprecation")
             final KeyEvent event = (KeyEvent)mediaButtonEvent.getExtras().getParcelable(Intent.EXTRA_KEY_EVENT);
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                listener.onKeyDown(eventToButton(event));
                 switch (event.getKeyCode()) {
                 case KEYCODE_BYPASS_PLAY:
                     onPlay();
@@ -992,6 +993,8 @@ public class AudioService extends MediaBrowserServiceCompat {
                     listener.onClick(eventToButton(event));
                     break;
                 }
+            } else if(event.getAction() == KeyEvent.ACTION_UP) {
+                listener.onKeyUp(eventToButton(event));
             }
             return true;
         }
@@ -1124,6 +1127,8 @@ public class AudioService extends MediaBrowserServiceCompat {
         void onLoadItem(String itemId, Result<MediaBrowserCompat.MediaItem> result);
         void onSearch(String query, Bundle extras, Result<List<MediaBrowserCompat.MediaItem>> result);
         void onClick(MediaButton mediaButton);
+        void onKeyDown(MediaButton mediaButton);
+        void onKeyUp(MediaButton mediaButton);
         void onPrepare();
         void onPrepareFromMediaId(String mediaId, Bundle extras);
         void onPrepareFromSearch(String query, Bundle extras);
